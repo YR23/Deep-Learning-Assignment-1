@@ -16,7 +16,7 @@ def initialize_parameters(layer_dims):
 
 # b.
 def linear_forward(A, W, b):
-    Z = np.dot(W, A) + b
+    Z = W.dot(A) + b
     cache = (A, W, b)
     return Z, cache
 
@@ -28,7 +28,9 @@ def sigmoid(Z):
 
 # d.
 def relu(Z):
-    return 0 if Z < 0 else Z
+    zeros = np.zeros((Z.shape[0], Z.shape[1]))
+    rel = np.maximum(zeros, Z)
+    return rel, Z
 
 
 # e.
@@ -45,10 +47,13 @@ def linear_activation_forward(A_prev, W, B, activation):
 def L_model_forward(X, parameters, use_batchnorm=False):
     caches = []
     N_layers = len(parameters) // 2
-    A = X  #Current Last activation result, at first it's X
+    A = X
     for l in range(1, N_layers):
         A_last = A
-        A, cache = linear_activation_forward(A_last, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
+        if l == 1:
+            A, cache = linear_activation_forward(A_last.T, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
+        else:
+            A, cache = linear_activation_forward(A_last, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
         caches.append(cache)
     AL, cache = linear_activation_forward(A, parameters['W' + str(N_layers)], parameters['b' + str(N_layers)], 'sigmoid')
     caches.append(cache)
