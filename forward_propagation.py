@@ -45,14 +45,14 @@ def linear_activation_forward(A_prev, W, B, activation):
 
 
 # f.
-def L_model_forward(X, parameters, use_batchnorm=True,dropout=1):
+def L_model_forward(X, parameters, use_batchnorm=False, dropout=0.5):
     caches = []
     N_layers = len(parameters) // 2
     A = X
     for l in range(1, N_layers):
         A_last = A
         A, cache = linear_activation_forward(A_last, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
-        A = DropOut(A,dropout)
+        A = DropOut(A, dropout)
         if (use_batchnorm):
             A =  apply_batchnorm(A)
         caches.append(cache)

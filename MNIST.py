@@ -16,8 +16,8 @@ def main():
     x_train = x_train.T
     y_train = to_categorical(y_train).T
     x_test = x_test.reshape(x_test.shape[0], x_test.shape[1] * x_test.shape[2])
-    layers = [x_test.shape[1],20,10]
-    train.L_layer_model(x_train,y_train,layers,0.0009,1000,32)
+    layers = [x_test.shape[1], 20, 10]
+    train.L_layer_model(x_train,y_train,layers, 0.0009, 1000, 32)
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
