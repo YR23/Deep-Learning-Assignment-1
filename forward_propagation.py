@@ -45,13 +45,16 @@ def linear_activation_forward(A_prev, W, B, activation):
 
 
 # f.
-def L_model_forward(X, parameters, use_batchnorm=False):
+def L_model_forward(X, parameters, use_batchnorm=True,dropout=1):
     caches = []
     N_layers = len(parameters) // 2
     A = X
     for l in range(1, N_layers):
         A_last = A
         A, cache = linear_activation_forward(A_last, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
+        A = DropOut(A,dropout)
+        if (use_batchnorm):
+            A =  apply_batchnorm(A)
         caches.append(cache)
     AL, cache = linear_activation_forward(A, parameters['W' + str(N_layers)], parameters['b' + str(N_layers)], 'sigmoid')
     caches.append(cache)
@@ -68,4 +71,15 @@ def compute_cost(AL, Y):
 
 # h.
 def apply_batchnorm(A):
-    return (A-np.mean(A,axis=0)) / (np.var(A,axis=0)+1e-8)
+    return (A-np.mean(A, axis=0)) / (np.var(A, axis=0)+1e-8)
+
+def DropOut(L,rate):
+    drop = np.random.rand(L.shape[0],L.shape[1])
+    for i in range(L.shape[0]):
+        for j in range(L.shape[1]):
+            if drop[i][j] <= rate:
+                drop[i][j] = 0
+            else:
+                drop[i][j] = 1
+    res = drop*L
+    return res
