@@ -1,5 +1,5 @@
 import numpy as np
-
+import time
 """
 The functions of the first part: Forward propagation process
 """
@@ -8,6 +8,7 @@ The functions of the first part: Forward propagation process
 # a.
 def initialize_parameters(layer_dims):
     dic = {}
+    np.random.seed(int(time.time()))
     for i in range(1, len(layer_dims)):
         dic['W' + str(i)] = np.random.random((layer_dims[i], layer_dims[i - 1]))/100
         dic['b' + str(i)] = np.zeros((layer_dims[i], 1))
