@@ -12,7 +12,7 @@ def Linear_backward(dZ, cache):
     A_prev, W, _ = cache
     m = A_prev.shape[1]
     dW = np.dot(dZ, A_prev.T) / m
-    db = np.squeeze(np.sum(dZ, axis=1, keepdims=True)) / m
+    db = np.sum(dZ, axis=1, keepdims=True) / m
     dA_prev = np.dot(W.T, dZ)
     return dA_prev, dW, db
 
@@ -30,12 +30,13 @@ def linear_activation_backward(dA, cache, activation):
 
 # c.
 def relu_backward(dA, activation_cache):
-    return dA if (activation_cache > 0) else 0
+    dA[activation_cache <= 0] = 0
+    return dA
 
 
 # d.
 def sigmoid_backward(dA, activation_cache):
-    return dA * (FowProp.sigmoid(activation_cache)*(1-FowProp.sigmoid(activation_cache)))
+    return dA * (FowProp.sigmoid(activation_cache)[0]*(1-FowProp.sigmoid(activation_cache)[0]))
 
 
 # e.

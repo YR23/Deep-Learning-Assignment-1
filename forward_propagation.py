@@ -9,7 +9,7 @@ The functions of the first part: Forward propagation process
 def initialize_parameters(layer_dims):
     dic = {}
     for i in range(1, len(layer_dims)):
-        dic['W' + str(i)] = np.random.random((layer_dims[i], layer_dims[i - 1]))
+        dic['W' + str(i)] = np.random.random((layer_dims[i], layer_dims[i - 1]))/100
         dic['b' + str(i)] = np.zeros((layer_dims[i], 1))
     return dic
 
@@ -23,7 +23,7 @@ def linear_forward(A, W, b):
 
 # c.
 def sigmoid(Z):
-    return 1 / (1 + np.exp(-Z))
+    return 1 / (1 + np.exp(-Z)),Z
 
 
 # d.
@@ -50,10 +50,7 @@ def L_model_forward(X, parameters, use_batchnorm=False):
     A = X
     for l in range(1, N_layers):
         A_last = A
-        if l == 1:
-            A, cache = linear_activation_forward(A_last.T, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
-        else:
-            A, cache = linear_activation_forward(A_last, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
+        A, cache = linear_activation_forward(A_last, parameters['W' + str(l)], parameters['b' + str(l)], 'relu')
         caches.append(cache)
     AL, cache = linear_activation_forward(A, parameters['W' + str(N_layers)], parameters['b' + str(N_layers)], 'sigmoid')
     caches.append(cache)
@@ -62,7 +59,7 @@ def L_model_forward(X, parameters, use_batchnorm=False):
 
 # g.
 def compute_cost(AL, Y):
-    cost = (-1 / Y.shape[1]) * np.sum(np.multiply(Y, np.log(AL)) + np.multiply(1 - Y, np.log(1 - AL)))
+    cost = (-1 / Y.shape[1]) * np.sum(np.multiply(np.log(AL),Y) + np.multiply( np.log(1 - AL),1-Y))
     if cost.shape != ():
         cost = np.squeeze(cost)
     return cost
